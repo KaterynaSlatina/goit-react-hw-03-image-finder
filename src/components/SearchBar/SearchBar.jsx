@@ -14,7 +14,13 @@ export class SearchBar extends Component {
     e.preventDefault();
 
     const { inputData } = this.state;
-    this.props.onSubmit(inputData);
+
+    if (inputData === '') {
+      alert('Please, fill input');
+      return;
+    }
+
+    this.props.onSubmit(this.setState.inputData);
     console.log(this.state);
     this.setState({ inputData: '' });
   };
