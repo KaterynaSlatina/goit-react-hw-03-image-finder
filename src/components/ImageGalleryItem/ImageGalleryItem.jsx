@@ -1,9 +1,9 @@
 import React from 'react';
 
-export const ImageGalleryItem = hit => {
+export const ImageGalleryItem = ({ hit }) => {
   return (
-    <ImageGalleryItem>
-      <img src="" alt="" />
-    </ImageGalleryItem>
+    <li>
+      <img src={hit.webformatURL} alt="" />
+    </li>
   );
 };

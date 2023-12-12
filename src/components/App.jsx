@@ -1,8 +1,11 @@
 import React, { Component } from 'react';
 import { SearchBar } from './SearchBar/SearchBar';
-import { ImageGallery } from './ImageGallery/ImageGallery';
 import { ImageGalleryItem } from './ImageGalleryItem/ImageGalleryItem';
-import { fetchImage } from 'components/FetchApi/FetchApi';
+import { ImageGallery } from './ImageGallery/ImageGallery';
+import { fetchImage } from 'FetchApi';
+import { Loader } from './Loader/Loader';
+import { Button } from './Button/Button';
+import { Modal } from './Modal/Modal';
 
 export class App extends Component {
   state = {
@@ -14,6 +17,8 @@ export class App extends Component {
     isLoading: false,
     error: '',
     isShowMore: false,
+    isShowModal: false,
+    modalImage: '',
   };
 
   formSubmit = inputData => {
@@ -31,17 +36,9 @@ export class App extends Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    if (
-      this.state.isShowMore !== prevState.isShowMore &&
-      this.state.isShowMore
-    ) {
+    const { inputData, page } = this.state;
+    if (prevState.inputData !== inputData || prevState.page !== page) {
       this.getImages();
-    }
-    if (
-      this.state.isShowMore !== prevState.isShowMore &&
-      !this.state.isShowMore
-    ) {
-      this.setState({ hits: null });
     }
   }
 
@@ -58,25 +55,48 @@ export class App extends Component {
     }
   };
 
-  handleClick = () => {
-    this.setState(prev => ({ isShowMore: !prev.isShowMore }));
+  handleClick = inputData => {
+    this.setState(prev => ({ page: prev.page + 1 }), this.fetchImage);
   };
 
+  handleImageClick = imageUrl => {
+    this.setState({ modalImage: imageUrl, showModal: true });
+  };
+  handleCloseModal = () => {
+    this.setState({ showModal: false, modalImage: '' });
+  };
+
+  // toggleModal = () => {
+  //   this.setState(({ showModal }) => ({
+  //     showModal: !showModal,
+  //   }));
+  // };
+
   render() {
-    const { hits, isLoading, error, isShowMore } = this.state;
+    const { hits, isLoading, error, isShowMore, isShowModal, modalImage } =
+      this.state;
     console.log(hits);
     return (
       <>
         <SearchBar onSubmit={this.formSubmit} />
-        <ImageGallery items={this.state.items} />
-        <button onClick={this.handleClick}>
-          {isShowMore ? 'Hide images' : 'Show more'}
-        </button>
-        {isLoading && <h1>Loading...</h1>}
+        <ImageGallery
+          items={this.state.items}
+          onImageClick={this.handleImageClick}
+        />
+
+        {isLoading && <Loader />}
         {error && <h1>{error}</h1>}
-        {isShowMore &&
-          hits &&
-          hits.map(el => <ImageGalleryItem key={el.id} hit={el} />)}
+        {hits && hits.map(el => <ImageGalleryItem key={el.id} hit={el} />)}
+        <Button onClick={this.handleClick}>
+          {isShowMore ? 'Hide images' : 'Show more'}
+        </Button>
+        {isShowModal && (
+          <Modal
+            isOpenModal={isShowModal}
+            item={modalImage}
+            onCloseModal={this.handleCloseModal}
+          />
+        )}
       </>
     );
   }

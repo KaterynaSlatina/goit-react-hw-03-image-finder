@@ -20,7 +20,7 @@ export class SearchBar extends Component {
       return;
     }
 
-    this.props.onSubmit(this.setState.inputData);
+    this.props.onSubmit(this.state.inputData);
     console.log(this.state);
     this.setState({ inputData: '' });
   };
