@@ -1,5 +1,6 @@
 import React from 'react';
 import { Component } from 'react';
+import css from './SearchBar.module.css';
 
 export class SearchBar extends Component {
   state = {
@@ -27,9 +28,9 @@ export class SearchBar extends Component {
 
   render() {
     return (
-      <header>
-        <form onSubmit={this.handleSubmit}>
-          <button type="submit">
+      <header className={css.search}>
+        <form className={css.form} onSubmit={this.handleSubmit}>
+          <button className={css.searchBtn} type="submit">
             <span>Search</span>
           </button>
 
@@ -41,6 +42,7 @@ export class SearchBar extends Component {
             autoComplete="off"
             autoFocus
             placeholder="Search images and photos"
+            className={css.input}
           />
         </form>
       </header>

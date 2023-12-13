@@ -7,7 +7,12 @@ export const ImageGalleryItem = ({ hit, onImageClick }) => {
   };
   return (
     <li className={css.imageItem}>
-      <img src={hit.webformatURL} alt="" onClick={click} />
+      <img
+        src={hit.webformatURL}
+        alt=""
+        onClick={click}
+        className={css.image}
+      />
     </li>
   );
 };

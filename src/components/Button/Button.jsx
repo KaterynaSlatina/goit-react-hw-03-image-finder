@@ -1,5 +1,10 @@
 import React from 'react';
+import css from './Button.module.css';
 
 export const Button = ({ onClick }) => {
-  return <button onClick={onClick}>Load more </button>;
+  return (
+    <button className={css.loadBtn} onClick={onClick}>
+      Load more{' '}
+    </button>
+  );
 };

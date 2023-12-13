@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { SearchBar } from './SearchBar/SearchBar';
-import { ImageGalleryItem } from './ImageGalleryItem/ImageGalleryItem';
 import { ImageGallery } from './ImageGallery/ImageGallery';
 import { fetchImage } from 'FetchApi';
 import { Loader } from './Loader/Loader';
@@ -43,13 +42,16 @@ export class App extends Component {
   }
 
   getImages = async () => {
-    if (!this.state.inputData) {
+    const { inputData, page } = this.state;
+    if (!inputData) {
       return;
     }
     try {
       this.setState({ isLoading: true, error: '' });
-      const response = await fetchImage(this.state.inputData, this.state.page);
-      this.setState({ hits: response.hits });
+      const response = await fetchImage(inputData, page);
+      this.setState(prevState => ({
+        items: prevState.items.concat(response.hits),
+      }));
     } catch (error) {
       console.log(error);
       this.setState({ error: error.message });
@@ -57,6 +59,8 @@ export class App extends Component {
       this.setState({ isLoading: false });
     }
   };
+
+  //
 
   handleClick = () => {
     this.setState(prev => ({ page: prev.page + 1 }), this.getImages);
@@ -69,16 +73,10 @@ export class App extends Component {
     this.setState({ isShowModal: false, modalImage: '' });
   };
 
-  // toggleModal = () => {
-  //   this.setState(({ showModal }) => ({
-  //     showModal: !showModal,
-  //   }));
-  // };
-
   render() {
-    const { hits, isLoading, error, isShowMore, isShowModal, modalImage } =
+    const { items, isLoading, error, isShowMore, isShowModal, modalImage } =
       this.state;
-    console.log(hits);
+
     return (
       <>
         <SearchBar onSubmit={this.formSubmit} />
@@ -89,17 +87,11 @@ export class App extends Component {
 
         {isLoading && <Loader />}
         {error && <h1>{error}</h1>}
-        {hits &&
-          hits.map(el => (
-            <ImageGalleryItem
-              key={el.id}
-              hit={el}
-              onImageClick={this.handleImageClick}
-            />
-          ))}
-        <Button onClick={this.handleClick}>
-          {isShowMore ? 'Hide images' : 'Show more'}
-        </Button>
+        {items.length > 0 && !isLoading && (
+          <Button onClick={this.handleClick}>
+            {isShowMore ? 'Hide images' : 'Show more'}
+          </Button>
+        )}
         {isShowModal && (
           <Modal
             isOpenModal={isShowModal}

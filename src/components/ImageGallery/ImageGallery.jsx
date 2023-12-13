@@ -1,14 +1,18 @@
 import React from 'react';
 import { ImageGalleryItem } from 'components/ImageGalleryItem/ImageGalleryItem';
+import css from './ImageGallery.module.css';
+import { nanoid } from 'nanoid';
 
 export const ImageGallery = ({ items, onImageClick }) => {
   return (
-    <ul>
-      {items.map(item => {
-        return (
-          <ImageGalleryItem key={item.id} item={item} onClick={onImageClick} />
-        );
-      })}
+    <ul className={css.gallery}>
+      {items.map(item => (
+        <ImageGalleryItem
+          key={nanoid()}
+          hit={item}
+          onImageClick={onImageClick}
+        />
+      ))}
     </ul>
   );
 };
