@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import css from './Modal.module.css';
 
 export class Modal extends Component {
   handleEsc = e => {
@@ -17,11 +18,11 @@ export class Modal extends Component {
     e.stopPropagation();
   };
   render() {
-    const { item, onCloseModal } = this.state;
+    const { item, onCloseModal } = this.props;
     return (
-      <div onClick={onCloseModal}>
+      <div className={css.overlay} onClick={onCloseModal}>
         <div>
-          <img src={item} alt="" />
+          <img src={item} alt="" onClick={this.handleImageClick} />
         </div>
       </div>
     );

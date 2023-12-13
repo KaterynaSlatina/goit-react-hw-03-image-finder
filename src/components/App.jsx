@@ -26,7 +26,7 @@ export class App extends Component {
     if (this.state.inputData !== inputData) {
       this.setState(
         { inputData, page: 1, items: [], totalImages: 0 },
-        this.fetchImage
+        this.getImages
       );
     }
   };
@@ -43,6 +43,9 @@ export class App extends Component {
   }
 
   getImages = async () => {
+    if (!this.state.inputData) {
+      return;
+    }
     try {
       this.setState({ isLoading: true, error: '' });
       const response = await fetchImage(this.state.inputData, this.state.page);
@@ -55,15 +58,15 @@ export class App extends Component {
     }
   };
 
-  handleClick = inputData => {
-    this.setState(prev => ({ page: prev.page + 1 }), this.fetchImage);
+  handleClick = () => {
+    this.setState(prev => ({ page: prev.page + 1 }), this.getImages);
   };
 
   handleImageClick = imageUrl => {
-    this.setState({ modalImage: imageUrl, showModal: true });
+    this.setState({ modalImage: imageUrl, isShowModal: true });
   };
   handleCloseModal = () => {
-    this.setState({ showModal: false, modalImage: '' });
+    this.setState({ isShowModal: false, modalImage: '' });
   };
 
   // toggleModal = () => {
@@ -86,7 +89,14 @@ export class App extends Component {
 
         {isLoading && <Loader />}
         {error && <h1>{error}</h1>}
-        {hits && hits.map(el => <ImageGalleryItem key={el.id} hit={el} />)}
+        {hits &&
+          hits.map(el => (
+            <ImageGalleryItem
+              key={el.id}
+              hit={el}
+              onImageClick={this.handleImageClick}
+            />
+          ))}
         <Button onClick={this.handleClick}>
           {isShowMore ? 'Hide images' : 'Show more'}
         </Button>
